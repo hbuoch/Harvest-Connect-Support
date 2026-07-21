@@ -276,6 +276,8 @@
       storeAuthStateInCookie: false
     }
   });
+  // MSAL Browser v3 requires initialize() to resolve before any other MSAL API is used.
+  var msalReady = msalInstance.initialize();
 
   var SITE = "https://shfbgnoa.sharepoint.com/sites/HelpDesk";
 
@@ -414,7 +416,9 @@
   // ---- Auth ------------------------------------------------------------
 
   function ensureSignedIn() {
-    return msalInstance.handleRedirectPromise().then(function (resp) {
+    return msalReady.then(function () {
+      return msalInstance.handleRedirectPromise();
+    }).then(function (resp) {
       if (resp && resp.account) {
         msalInstance.setActiveAccount(resp.account);
       }
@@ -430,7 +434,9 @@
 
   function signIn() {
     els.signinError.classList.remove("show");
-    return msalInstance.loginRedirect({ scopes: MSAL_CONFIG.scopes }).catch(function (err) {
+    return msalReady.then(function () {
+      return msalInstance.loginRedirect({ scopes: MSAL_CONFIG.scopes });
+    }).catch(function (err) {
       var code = (err && (err.errorCode || err.name)) || "unknown";
       var msg = (err && err.message) || String(err);
       els.signinError.textContent = "Sign-in failed [" + code + "]: " + msg;
@@ -440,16 +446,18 @@
   }
 
   function signOut() {
-    msalInstance.logoutRedirect();
+    msalReady.then(function () { msalInstance.logoutRedirect(); });
   }
 
   function getAccessToken() {
-    var account = msalInstance.getActiveAccount();
-    if (!account) return Promise.reject(new Error("not-signed-in"));
-    return msalInstance.acquireTokenSilent({ scopes: MSAL_CONFIG.scopes, account: account })
-      .catch(function () {
-        return msalInstance.acquireTokenRedirect({ scopes: MSAL_CONFIG.scopes });
-      });
+    return msalReady.then(function () {
+      var account = msalInstance.getActiveAccount();
+      if (!account) throw new Error("not-signed-in");
+      return msalInstance.acquireTokenSilent({ scopes: MSAL_CONFIG.scopes, account: account })
+        .catch(function () {
+          return msalInstance.acquireTokenRedirect({ scopes: MSAL_CONFIG.scopes });
+        });
+    });
   }
 
   // ---- Submission -------------------------------------------------------
