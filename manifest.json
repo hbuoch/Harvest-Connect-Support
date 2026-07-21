@@ -1,0 +1,16 @@
+{
+  "name": "Harvest Connect Support",
+  "short_name": "HC Support",
+  "description": "Submit a support ticket to IT, HR, Facilities, Finance, Marcom, or Volunteer Services.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3f6ef",
+  "theme_color": "#2c5f2d",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
