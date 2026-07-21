@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -431,8 +431,11 @@
   function signIn() {
     els.signinError.classList.remove("show");
     return msalInstance.loginRedirect({ scopes: MSAL_CONFIG.scopes }).catch(function (err) {
-      els.signinError.textContent = "Sign-in failed. Please try again.";
+      var code = (err && (err.errorCode || err.name)) || "unknown";
+      var msg = (err && err.message) || String(err);
+      els.signinError.textContent = "Sign-in failed [" + code + "]: " + msg;
       els.signinError.classList.add("show");
+      console.error("MSAL sign-in error", err);
     });
   }
 
