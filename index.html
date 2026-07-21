@@ -501,10 +501,11 @@
       showScreen("confirm");
     }).catch(function (err) {
       setSubmitting(false);
+      console.error("Ticket submit error", err);
       if (/not-signed-in/i.test(String(err.message))) {
         showError("You need to be signed in to submit a ticket. Please sign in and try again.");
       } else {
-        showError("Something went wrong submitting your ticket. Please try again, or use the full site.");
+        showError("Error: " + (err && err.message ? err.message : String(err)));
       }
     });
   }
