@@ -269,7 +269,7 @@
     auth: {
       clientId: MSAL_CONFIG.clientId,
       authority: "https://login.microsoftonline.com/" + MSAL_CONFIG.tenantId,
-      redirectUri: window.location.origin + window.location.pathname
+      redirectUri: window.location.origin + window.location.pathname.replace(/index\.html$/, "")
     },
     cache: {
       cacheLocation: "localStorage",
